@@ -1,0 +1,196 @@
+{
+  "app": {
+    "name": "CoopServe",
+    "tagline": "उचित गृह सेवाएं, मिलकर"
+  },
+  "common": {
+    "namaste": "नमस्ते",
+    "loading": "लोड हो रहा है...",
+    "error": "कुछ गलत हुआ",
+    "retry": "फिर कोशिश करें",
+    "cancel": "रद्द करें",
+    "confirm": "पुष्टि करें",
+    "submit": "जमा करें",
+    "next": "आगे",
+    "back": "पीछे",
+    "done": "हो गया",
+    "save": "सहेजें",
+    "edit": "संपादित करें",
+    "close": "बंद करें",
+    "or": "या",
+    "simulated": "सिमुलेटेड",
+    "demoMode": "डेमो मोड"
+  },
+  "auth": {
+    "signIn": "साइन इन करें",
+    "signUp": "साइन अप करें",
+    "signOut": "साइन आउट",
+    "mobile": "मोबाइल नंबर",
+    "password": "पासवर्ड",
+    "mobilePlaceholder": "10 अंकों का मोबाइल नंबर",
+    "passwordPlaceholder": "8+ अक्षर का पासवर्ड",
+    "noAccount": "खाता नहीं है?",
+    "haveAccount": "पहले से खाता है?",
+    "signUpAsCustomer": "ग्राहक के रूप में साइन अप करें",
+    "signUpAsWorker": "कार्यकर्ता के रूप में साइन अप करें",
+    "steps": {
+      "personal": "व्यक्तिगत विवरण",
+      "identity": "पहचान सत्यापन",
+      "password": "पासवर्ड सेट करें"
+    },
+    "fields": {
+      "name": "पूरा नाम",
+      "dob": "जन्म तिथि",
+      "address": "पता",
+      "aadhaar": "आधार नंबर",
+      "pan": "पैन नंबर",
+      "category": "सेवा श्रेणी",
+      "certificate": "प्रमाणपत्र (वैकल्पिक)",
+      "otp": "ओटीपी"
+    },
+    "mock": {
+      "aadhaarNote": "कोई भी 12 अंक स्वीकार (सिमुलेटेड सत्यापन)",
+      "panNote": "फॉर्मेट: ABCDE1234F (सिमुलेटेड सत्यापन)",
+      "otpNote": "टेस्ट ओटीपी: 123456 (डेमो मोड)"
+    }
+  },
+  "home": {
+    "greeting": "नमस्ते, {{name}}",
+    "searchPlaceholder": "सेवा खोजें...",
+    "categories": "सेवाएं",
+    "recentBookings": "हाल की बुकिंग",
+    "noBookings": "अभी कोई बुकिंग नहीं",
+    "bookNow": "सेवा बुक करें",
+    "location": "स्थान"
+  },
+  "categories": {
+    "Plumbing": "प्लम्बिंग",
+    "Carpentry": "बढ़ईगिरी",
+    "Cleaning": "सफाई",
+    "Electrical": "बिजली कार्य",
+    "Painting": "पेंटिंग",
+    "Appliance Repair": "उपकरण मरम्मत",
+    "Pest Control": "कीट नियंत्रण",
+    "AC Service": "एसी सर्विस"
+  },
+  "booking": {
+    "newBooking": "नई बुकिंग",
+    "description": "समस्या बताएं",
+    "descriptionPlaceholder": "क्या काम करना है?",
+    "uploadPhoto": "फोटो अपलोड करें",
+    "findingWorker": "आपके लिए सबसे अच्छा कार्यकर्ता ढूंढ रहे हैं...",
+    "workerFound": "कार्यकर्ता मिला",
+    "accepting": "कार्यकर्ता स्वीकार कर रहा है...",
+    "timerLabel": "स्वीकार करने का समय",
+    "accept": "स्वीकार करें",
+    "reject": "दूसरा देखें",
+    "certified": "प्रमाणित",
+    "uncertified": "अप्रमाणित",
+    "status": {
+      "pending": "कार्यकर्ता खोज रहे हैं",
+      "matched": "कार्यकर्ता मिला",
+      "quoted": "कोटेशन मिला",
+      "accepted": "कोटेशन स्वीकृत",
+      "paid": "भुगतान होल्ड में",
+      "in_progress": "काम चल रहा है",
+      "completed": "पूर्ण",
+      "rated": "रेटिंग दी गई",
+      "cancelled": "रद्द"
+    },
+    "quote": {
+      "title": "कार्यकर्ता का कोटेशन",
+      "wage": "श्रम शुल्क",
+      "parts": "सामग्री खर्च",
+      "total": "कुल अनुमान",
+      "accept": "कोटेशन स्वीकार करें",
+      "reject": "अस्वीकार करें"
+    },
+    "payment": {
+      "title": "भुगतान",
+      "held": "एस्क्रो में भुगतान होल्ड",
+      "release": "भुगतान जारी करें",
+      "refund": "रिफंड का अनुरोध"
+    },
+    "otp": {
+      "title": "काम पूरा करें",
+      "label": "समापन ओटीपी दर्ज करें",
+      "hint": "काम पूरा होने पर कार्यकर्ता को यह ओटीपी दें",
+      "submit": "पुष्टि करें"
+    },
+    "tracking": {
+      "title": "लाइव ट्रैकिंग",
+      "workerOnWay": "कार्यकर्ता रास्ते में है",
+      "eta": "ETA: {{minutes}} मिनट"
+    }
+  },
+  "rating": {
+    "title": "अपना अनुभव बताएं",
+    "stars": "स्टार",
+    "feedback": "टिप्पणी करें (वैकल्पिक)",
+    "feedbackPlaceholder": "सेवा कैसी थी?",
+    "submit": "रेटिंग जमा करें",
+    "bayesianNote": "रेटिंग बेयजियन-समायोजित स्कोर दर्शाती है"
+  },
+  "worker": {
+    "home": {
+      "online": "ऑनलाइन",
+      "offline": "ऑफलाइन",
+      "goOnline": "ऑनलाइन जाएं",
+      "goOffline": "ऑफलाइन जाएं",
+      "earnings": "कमाई",
+      "rating": "मेरी रेटिंग",
+      "wallet": "कल्याण वॉलेट"
+    },
+    "job": {
+      "newJob": "नई जॉब अनुरोध!",
+      "accept": "स्वीकार करें",
+      "decline": "अस्वीकार करें",
+      "timeLeft": "{{seconds}} सेकंड बचे",
+      "quoteTitle": "अपना कोटेशन दें",
+      "wage": "आपका श्रम शुल्क (₹)",
+      "parts": "सामग्री खर्च (₹)",
+      "submitQuote": "कोटेशन जमा करें",
+      "quoteTimer": "{{minutes}}मि {{seconds}}से बचे"
+    },
+    "earnings": {
+      "title": "कमाई",
+      "total": "कुल कमाई",
+      "platformFee": "प्लेटफॉर्म शुल्क (2.5%)",
+      "welfareFee": "कल्याण योगदान (2.5%)",
+      "payout": "आपकी आय"
+    },
+    "passport": {
+      "title": "कार्यकर्ता पासपोर्ट",
+      "id": "कार्यकर्ता आईडी",
+      "category": "श्रेणी",
+      "verified": "सत्यापित",
+      "scanQr": "प्रोफाइल देखने के लिए स्कैन करें"
+    }
+  },
+  "welfare": {
+    "title": "कल्याण वॉलेट",
+    "pmsby": "PMSBY बीमा",
+    "enrolled": "नामांकित",
+    "notEnrolled": "नामांकित नहीं",
+    "policyYear": "पॉलिसी वर्ष",
+    "contributions": "कुल योगदान",
+    "surplus": "शेष राशि",
+    "simulatedNote": "उदाहरण मूल्य — वास्तविक बीमा नामांकन नहीं"
+  },
+  "admin": {
+    "title": "एडमिन डैशबोर्ड",
+    "allBookings": "सभी बुकिंग",
+    "release": "भुगतान जारी करें",
+    "refund": "रिफंड करें",
+    "confirmRelease": "कार्यकर्ता को भुगतान जारी करें?",
+    "confirmRefund": "ग्राहक को रिफंड करें?"
+  },
+  "sms": {
+    "title": "SMS-आधारित प्रवाह",
+    "subtitle": "फीचर-फोन कार्यकर्ता जॉब कैसे प्राप्त करते हैं",
+    "demoNote": "डेमो प्रॉप — कोई वास्तविक SMS एकीकरण नहीं",
+    "pingMessage": "CoopServe: आपके पास नई {{category}} जॉब। कोड: {{code}}। स्वीकार करने के लिए ACCEPT {{code}} भेजें। 30 सेकंड वैध।",
+    "acceptReply": "ACCEPT {{code}}",
+    "confirmMessage": "CoopServe: जॉब स्वीकृत! ग्राहक: {{name}}, {{address}}। OTP: {{otp}}। OTP के साथ पूर्ण करें।"
+  }
+}

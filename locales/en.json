@@ -1,0 +1,196 @@
+{
+  "app": {
+    "name": "CoopServe",
+    "tagline": "Fair Home Services, Together"
+  },
+  "common": {
+    "namaste": "Namaste",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "retry": "Try Again",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "submit": "Submit",
+    "next": "Next",
+    "back": "Back",
+    "done": "Done",
+    "save": "Save",
+    "edit": "Edit",
+    "close": "Close",
+    "or": "or",
+    "simulated": "Simulated",
+    "demoMode": "Demo Mode"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "mobile": "Mobile Number",
+    "password": "Password",
+    "mobilePlaceholder": "10-digit mobile number",
+    "passwordPlaceholder": "8+ character password",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signUpAsCustomer": "Sign up as Customer",
+    "signUpAsWorker": "Sign up as Worker",
+    "steps": {
+      "personal": "Personal Details",
+      "identity": "Identity Verification",
+      "password": "Set Password"
+    },
+    "fields": {
+      "name": "Full Name",
+      "dob": "Date of Birth",
+      "address": "Address",
+      "aadhaar": "Aadhaar Number",
+      "pan": "PAN Number",
+      "category": "Service Category",
+      "certificate": "Certification (optional)",
+      "otp": "OTP"
+    },
+    "mock": {
+      "aadhaarNote": "Any 12-digit number accepted (simulated verification)",
+      "panNote": "Format: ABCDE1234F (simulated verification)",
+      "otpNote": "Test OTP: 123456 (demo mode)"
+    }
+  },
+  "home": {
+    "greeting": "Namaste, {{name}}",
+    "searchPlaceholder": "Search for a service...",
+    "categories": "Services",
+    "recentBookings": "Recent Bookings",
+    "noBookings": "No bookings yet",
+    "bookNow": "Book a Service",
+    "location": "Location"
+  },
+  "categories": {
+    "Plumbing": "Plumbing",
+    "Carpentry": "Carpentry",
+    "Cleaning": "Cleaning",
+    "Electrical": "Electrical",
+    "Painting": "Painting",
+    "Appliance Repair": "Appliance Repair",
+    "Pest Control": "Pest Control",
+    "AC Service": "AC Service"
+  },
+  "booking": {
+    "newBooking": "New Booking",
+    "description": "Describe the issue",
+    "descriptionPlaceholder": "What needs to be done?",
+    "uploadPhoto": "Upload a Photo",
+    "findingWorker": "Finding the best worker for you...",
+    "workerFound": "Worker Found",
+    "accepting": "Worker is accepting...",
+    "timerLabel": "Accept window",
+    "accept": "Accept",
+    "reject": "Try Another",
+    "certified": "Certified",
+    "uncertified": "Uncertified",
+    "status": {
+      "pending": "Finding Worker",
+      "matched": "Worker Matched",
+      "quoted": "Quote Received",
+      "accepted": "Quote Accepted",
+      "paid": "Payment Held",
+      "in_progress": "Work In Progress",
+      "completed": "Completed",
+      "rated": "Rated",
+      "cancelled": "Cancelled"
+    },
+    "quote": {
+      "title": "Worker's Quote",
+      "wage": "Labour charge",
+      "parts": "Parts & material",
+      "total": "Total estimate",
+      "accept": "Accept Quote",
+      "reject": "Decline"
+    },
+    "payment": {
+      "title": "Payment",
+      "held": "Payment Held in Escrow",
+      "release": "Release Payment",
+      "refund": "Request Refund"
+    },
+    "otp": {
+      "title": "Complete Job",
+      "label": "Enter completion OTP",
+      "hint": "Give this OTP to the worker when the job is done",
+      "submit": "Confirm Completion"
+    },
+    "tracking": {
+      "title": "Live Tracking",
+      "workerOnWay": "Worker is on the way",
+      "eta": "ETA: {{minutes}} min"
+    }
+  },
+  "rating": {
+    "title": "Rate your experience",
+    "stars": "Stars",
+    "feedback": "Leave a comment (optional)",
+    "feedbackPlaceholder": "How was the service?",
+    "submit": "Submit Rating",
+    "bayesianNote": "Rating reflects Bayesian-adjusted score"
+  },
+  "worker": {
+    "home": {
+      "online": "Online",
+      "offline": "Offline",
+      "goOnline": "Go Online",
+      "goOffline": "Go Offline",
+      "earnings": "Earnings",
+      "rating": "My Rating",
+      "wallet": "Welfare Wallet"
+    },
+    "job": {
+      "newJob": "New Job Request!",
+      "accept": "Accept",
+      "decline": "Decline",
+      "timeLeft": "{{seconds}}s to respond",
+      "quoteTitle": "Submit Your Quote",
+      "wage": "Your labour charge (₹)",
+      "parts": "Parts/materials cost (₹)",
+      "submitQuote": "Submit Quote",
+      "quoteTimer": "{{minutes}}m {{seconds}}s remaining"
+    },
+    "earnings": {
+      "title": "Earnings",
+      "total": "Total earned",
+      "platformFee": "Platform fee (2.5%)",
+      "welfareFee": "Welfare contribution (2.5%)",
+      "payout": "Your payout"
+    },
+    "passport": {
+      "title": "Worker Passport",
+      "id": "Worker ID",
+      "category": "Category",
+      "verified": "Verified",
+      "scanQr": "Scan to view profile"
+    }
+  },
+  "welfare": {
+    "title": "Welfare Wallet",
+    "pmsby": "PMSBY Insurance",
+    "enrolled": "Enrolled",
+    "notEnrolled": "Not Enrolled",
+    "policyYear": "Policy Year",
+    "contributions": "Total Contributions",
+    "surplus": "Surplus Balance",
+    "simulatedNote": "Illustrative values — not a real insurance enrollment"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "allBookings": "All Bookings",
+    "release": "Release Payment",
+    "refund": "Refund",
+    "confirmRelease": "Release payment to worker?",
+    "confirmRefund": "Refund payment to customer?"
+  },
+  "sms": {
+    "title": "SMS-Based Flow",
+    "subtitle": "How feature-phone workers receive jobs",
+    "demoNote": "Demo Prop — No real SMS integration",
+    "pingMessage": "CoopServe: New {{category}} job near you. Code: {{code}}. Reply ACCEPT {{code}} to take it. Valid 30s.",
+    "acceptReply": "ACCEPT {{code}}",
+    "confirmMessage": "CoopServe: Job confirmed! Customer: {{name}}, {{address}}. OTP: {{otp}}. Mark complete with OTP."
+  }
+}
