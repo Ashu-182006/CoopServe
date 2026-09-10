@@ -28,9 +28,8 @@ export const POST = async (req: NextRequest, ctx: any) => {
     bookingId: id,
     amount: totalAmount,
     platformFee,
-    welfareContribution,
     workerPayout,
-    status: "released",
+    escrowStatus: "released",
   });
 
   // 3. Update Welfare Wallet
@@ -40,7 +39,7 @@ export const POST = async (req: NextRequest, ctx: any) => {
       await db.update(welfareWallet).set({
         contributionsTotal: (wallet.contributionsTotal || 0) + welfareContribution,
         updatedAt: new Date()
-      }).where(eq(welfareWallet.id, wallet.id));
+      }).where(eq(welfareWallet.workerId, wallet.workerId));
     }
   }
 

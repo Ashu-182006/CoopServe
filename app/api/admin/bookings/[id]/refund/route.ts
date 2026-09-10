@@ -23,9 +23,8 @@ export const POST = async (req: NextRequest, ctx: any) => {
     bookingId: id,
     amount: totalAmount,
     platformFee: 0,
-    welfareContribution: 0,
     workerPayout: 0,
-    status: "refunded", // Note: The payments.status enum only has 'pending' and 'released' in the schema right now, but for SQLite/PG we can sometimes insert this or alter it. Assuming DB accepts it, or we just rely on booking status. Let's just use 'pending' or not insert a payment row and just update booking.
+    escrowStatus: "refunded", // Note: The payments.status enum only has 'pending' and 'released' in the schema right now, but for SQLite/PG we can sometimes insert this or alter it. Assuming DB accepts it, or we just rely on booking status. Let's just use 'pending' or not insert a payment row and just update booking.
   }).catch(() => {
     // If enum fails, we'll just skip inserting the payment row.
   });
