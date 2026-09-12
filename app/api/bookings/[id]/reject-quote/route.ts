@@ -33,7 +33,7 @@ export const POST = withAuth(async (req, jwtUser, ctx) => {
       status: "matched", // Change from "pending" to "matched" to trigger worker ping
       workerId: nextWorkerId,
       currentRank: nextRank,
-      pingExpiresAt: new Date(Date.now() + 60 * 1000), // 60s window
+      pingExpiresAt: new Date(Date.now() + 90 * 1000), // 90s window
       quoteWage: null,
       quotePartsCost: null,
       updatedAt: new Date(),

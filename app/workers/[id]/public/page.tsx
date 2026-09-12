@@ -71,7 +71,7 @@ export default function WorkerPublicProfile({ params }: { params: Promise<{ id: 
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "2rem" }}>
             <div style={{ background: "rgba(255,255,255,0.05)", padding: "0.5rem 1rem", borderRadius: "var(--radius-md)" }}>
               <div style={{ fontSize: "0.75rem", color: "var(--color-text-secondary)", textTransform: "uppercase" }}>Rating</div>
-              <div style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--color-primary-400)" }}>★ {data.stats?.bayesianAvg?.toFixed(1) || "New"}</div>
+              <div style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--color-warning)" }}>★ {data.stats?.bayesianAvg?.toFixed(1) || "New"}</div>
             </div>
             
             {data.certificationStatus && (

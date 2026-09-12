@@ -50,11 +50,11 @@ export default function EarningsPage() {
       </header>
 
       <main style={{ maxWidth: 1200, margin: "0 auto", width: "100%", padding: "1.5rem 1.25rem" }}>
-        <div className="card animate-slide-up" style={{ padding: "1.5rem", textAlign: "center", marginBottom: "2rem", border: "1px solid var(--color-primary-500)", background: "var(--color-surface-800)" }}>
+        <div className="card animate-slide-up" style={{ padding: "1.5rem", textAlign: "center", marginBottom: "2rem", border: "1px solid var(--color-primary-500)", background: "linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%)" }}>
           <p style={{ fontSize: "0.9rem", color: "var(--color-text-secondary)", marginBottom: "0.5rem", textTransform: "uppercase" }}>
             {lang === "hi" ? "कुल कमाई (इस महीने)" : "Total Earnings (This Month)"}
           </p>
-          <p style={{ fontSize: "2.5rem", fontWeight: 800, color: "var(--color-accent-400)", margin: 0 }}>
+          <p style={{ fontSize: "2.5rem", fontWeight: 900, margin: 0, color: "#118C4F" }}>
             ₹{realTotal.toFixed(0)}
           </p>
         </div>

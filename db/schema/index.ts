@@ -56,6 +56,7 @@ export const users = pgTable("users", {
   langPref:      langPrefEnum("lang_pref").notNull().default("en"),
   createdAt:     timestamp("created_at").notNull().defaultNow(),
   updatedAt:     timestamp("updated_at").notNull().defaultNow(),
+  isBlocked:     boolean("is_blocked").notNull().default(false),
 }, (t) => ({
   unq_mobile_role: unique("unq_mobile_role").on(t.mobile, t.role),
 }));

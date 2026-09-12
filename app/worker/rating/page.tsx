@@ -75,18 +75,19 @@ export default function RatingPage() {
       </header>
 
       <main style={{ maxWidth: 1200, margin: "0 auto", width: "100%", padding: "1.5rem 1.25rem" }}>
-        <div className="card animate-slide-up" style={{ padding: "1.5rem", textAlign: "center", marginBottom: "2rem", background: "var(--color-surface-800)" }}>
-          <p style={{ fontSize: "0.9rem", color: "var(--color-text-secondary)", marginBottom: "0.5rem", textTransform: "uppercase" }}>
+        <div className="card animate-slide-up" style={{ padding: "1.5rem", textAlign: "center", marginBottom: "2rem", background: "linear-gradient(135deg, #FEF9C3 0%, #FDE047 100%)", border: "1px solid rgba(0,0,0,0.05)" }}>
+          <p style={{ fontSize: "0.9rem", color: "#64748B", marginBottom: "0.5rem", textTransform: "uppercase", fontWeight: 700 }}>
             {lang === "hi" ? "वर्तमान रेटिंग" : "Current Rating"}
           </p>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span style={{ fontSize: "2.5rem", fontWeight: 800, color: "var(--color-primary-400)", margin: 0 }}>
-              ★ {data.currentRating.toFixed(1)}
+            <span style={{ fontSize: "2.5rem", fontWeight: 800, color: "var(--color-warning)", margin: 0, textShadow: "0px 1px 3px rgba(0,0,0,0.3)" }}>
+              ★
+            </span>
+            <span style={{ fontSize: "2.5rem", fontWeight: 800, color: "#1E293B", margin: 0 }}>
+              {data.currentRating.toFixed(1)}
             </span>
           </div>
-          <p style={{ fontSize: "0.85rem", color: "var(--color-text-muted)", marginTop: "0.5rem" }}>
-            {lang === "hi" ? `${data.totalReviews} समीक्षाओं के आधार पर` : `Based on ${data.totalReviews} reviews`}
-          </p>
+
         </div>
 
         <div className="card animate-slide-up" style={{ padding: "1.5rem", marginBottom: "2rem", overflowX: "auto" }}>
@@ -104,7 +105,7 @@ export default function RatingPage() {
             <svg viewBox={`0 -10 ${width} ${height + 20}`} style={{ width: "100%", height: "100%", marginLeft: "2rem", overflow: "visible" }}>
               <polyline
                 fill="none"
-                stroke="var(--color-primary-500)"
+                stroke="var(--color-warning)"
                 strokeWidth="4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -114,7 +115,7 @@ export default function RatingPage() {
                 const x = (d.job / maxJobs) * width;
                 const y = height - ((d.rating - minRating) / (maxRating - minRating)) * height;
                 return (
-                  <circle key={i} cx={x} cy={y} r="6" fill="#ffffff" stroke="var(--color-primary-500)" strokeWidth="3" />
+                  <circle key={i} cx={x} cy={y} r="6" fill="#ffffff" stroke="var(--color-warning)" strokeWidth="3" />
                 );
               })}
             </svg>

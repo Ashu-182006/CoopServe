@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { db } from "@/db";
-import { bookings, customers, payments, welfareWallet } from "@/db/schema";
+import { bookings, customers, payments, welfareWallet, workers } from "@/db/schema";
 import { withAuth, apiError, apiOk } from "@/lib/api-middleware";
 import { eq } from "drizzle-orm";
 
@@ -18,9 +18,16 @@ export const POST = withAuth(async (req, jwtUser, ctx) => {
     return apiError(`Cannot complete booking in ${booking.status} status`, 409);
   }
 
-  // Find customer to verify they own the booking
-  const [customer] = await db.select().from(customers).where(eq(customers.userId, jwtUser.sub));
-  if (!customer || customer.id !== booking.customerId) return apiError("Forbidden", 403);
+  // Verify ownership based on role
+  if (jwtUser.role === "customer") {
+    const [customer] = await db.select().from(customers).where(eq(customers.userId, jwtUser.sub));
+    if (!customer || customer.id !== booking.customerId) return apiError("Forbidden", 403);
+  } else if (jwtUser.role === "worker") {
+    const [worker] = await db.select().from(workers).where(eq(workers.userId, jwtUser.sub));
+    if (!worker || worker.id !== booking.workerId) return apiError("Forbidden", 403);
+  } else {
+    return apiError("Forbidden", 403);
+  }
 
   // Verify OTP
   if (booking.otp !== otp) {
@@ -54,4 +61,4 @@ export const POST = withAuth(async (req, jwtUser, ctx) => {
   }
 
   return apiOk({ success: true, message: "Booking completed and payment released" });
-}, ["customer"]);
+}, ["customer", "worker"]);

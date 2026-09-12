@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -27,12 +28,13 @@ const STATUS_LABELS: Record<string, { en: string; hi: string; color: string }> =
   in_progress: { en: "In Progress",      hi: "काम चल रहा है",          color: "#f97316" },
   completed:   { en: "Completed",        hi: "पूर्ण",                   color: "#22c55e" },
   rated:       { en: "Rated",            hi: "रेटिंग दी गई",           color: "#6b7280" },
-  cancelled:   { en: "Cancelled",        hi: "रद्द",                    color: "#ef4444" },
+  cancelled:   { en: "Refund Initiated", hi: "रिफंड आरंभ किया गया", color: "#ef4444" },
 };
 
 export default function CustomerHomePage() {
   const { user, token, signOut } = useAuth();
   const { lang, toggle, t } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: bookings } = usePolling<Booking[]>("/api/customer/bookings", {
     intervalMs: 5000,
@@ -93,8 +95,8 @@ export default function CustomerHomePage() {
               fontSize: "1rem",
               boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
             }}
-            readOnly
-            onClick={() => {/* TODO: search */}}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </header>
@@ -109,7 +111,10 @@ export default function CustomerHomePage() {
             </h2>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.75rem" }}>
-            {CATEGORIES.map((cat, i) => (
+            {CATEGORIES.filter(cat => 
+              cat.en.toLowerCase().includes(searchQuery.toLowerCase()) || 
+              cat.hi.includes(searchQuery)
+            ).map((cat, i) => (
               <Link
                 key={cat.id}
                 href={`/customer/book?category=${encodeURIComponent(cat.id)}`}

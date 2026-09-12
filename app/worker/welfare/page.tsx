@@ -52,49 +52,49 @@ function WelfareWalletScreen() {
 
 
         {/* PMSBY Card */}
-        <div className="card animate-slide-up" style={{ padding: "1.5rem", marginBottom: "1rem", background: "linear-gradient(135deg, rgba(43,66,175,0.15), rgba(43,66,175,0.02))", border: "1px solid rgba(43,66,175,0.3)" }}>
+        <div className="card animate-slide-up" style={{ padding: "1.5rem", marginBottom: "1rem", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 8px 16px rgba(0,0,0,0.1)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
             <div>
-              <h2 style={{ fontSize: "1.1rem", margin: "0 0 0.25rem", color: "var(--color-text-primary)" }}>PMSBY</h2>
-              <p style={{ fontSize: "0.85rem", margin: 0, color: "var(--color-text-secondary)" }}>Pradhan Mantri Suraksha Bima Yojana</p>
+              <h2 style={{ fontSize: "1.1rem", margin: "0 0 0.25rem", color: "#1E293B", fontWeight: 800 }}>PMSBY</h2>
+              <p style={{ fontSize: "0.85rem", margin: 0, color: "#64748B", fontWeight: 500 }}>Pradhan Mantri Suraksha Bima Yojana</p>
             </div>
-            <Shield size={32} color="var(--color-primary-500)" />
+            <Shield size={32} color="#F59E0B" />
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>{lang === "hi" ? "नामांकन स्थिति" : "Enrollment Status"}</span>
-              <strong style={{ background: wallet.pmsbyEnrolled ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.1)", color: wallet.pmsbyEnrolled ? "#22c55e" : "var(--color-text-primary)", padding: "0.25rem 0.75rem", borderRadius: "var(--radius-full)", fontSize: "0.85rem" }}>
+              <span style={{ color: "#64748B", fontWeight: 500 }}>{lang === "hi" ? "नामांकन स्थिति" : "Enrollment Status"}</span>
+              <strong style={{ background: wallet.pmsbyEnrolled ? "rgba(34,197,94,0.15)" : "rgba(0,0,0,0.05)", color: wallet.pmsbyEnrolled ? "#22c55e" : "#1E293B", padding: "0.25rem 0.75rem", borderRadius: "var(--radius-full)", fontSize: "0.85rem" }}>
                 {wallet.pmsbyEnrolled ? (lang === "hi" ? "सक्रिय" : "Active") : (lang === "hi" ? "लंबित" : "Pending")}
               </strong>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ color: "var(--color-text-secondary)" }}>{lang === "hi" ? "पॉलिसी वर्ष" : "Policy Year"}</span>
-              <strong>{wallet.pmsbyPolicyYear}</strong>
+              <span style={{ color: "#64748B", fontWeight: 500 }}>{lang === "hi" ? "पॉलिसी वर्ष" : "Policy Year"}</span>
+              <strong style={{ color: "#1E293B" }}>{wallet.pmsbyPolicyYear}</strong>
             </div>
           </div>
         </div>
 
         {/* Contributions Summary */}
-        <div className="card animate-slide-up" style={{ padding: "1.5rem" }}>
-          <h3 style={{ fontSize: "1rem", marginBottom: "1.5rem", color: "var(--color-text-primary)" }}>
+        <div className="card animate-slide-up" style={{ padding: "1.5rem", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 8px 16px rgba(0,0,0,0.1)" }}>
+          <h3 style={{ fontSize: "1rem", marginBottom: "1.5rem", color: "#1E293B", fontWeight: 800 }}>
             {lang === "hi" ? "योगदान सारांश" : "Contributions Summary"}
           </h3>
           
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
-            <span style={{ color: "var(--color-text-secondary)" }}>{lang === "hi" ? "कुल जमा (2.5% शुल्क)" : "Total Collected (2.5% fee)"}</span>
-            <span style={{ fontWeight: 600 }}>₹{(wallet.contributionsTotal / 100).toFixed(2)}</span>
+            <span style={{ color: "#64748B", fontWeight: 500 }}>{lang === "hi" ? "कुल जमा (2.5% शुल्क)" : "Total Collected (2.5% fee)"}</span>
+            <span style={{ fontWeight: 600, color: "#1E293B" }}>₹{(wallet.contributionsTotal / 100).toFixed(2)}</span>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
-            <span style={{ color: "var(--color-text-secondary)" }}>{lang === "hi" ? "प्रीमियम भुगतान" : "Premium Paid"}</span>
-            <span style={{ color: "var(--color-error)" }}>- ₹20.00</span>
+            <span style={{ color: "#64748B", fontWeight: 500 }}>{lang === "hi" ? "प्रीमियम भुगतान" : "Premium Paid"}</span>
+            <span style={{ color: "var(--color-error)", fontWeight: 600 }}>- ₹20.00</span>
           </div>
           
-          <hr style={{ border: "none", borderTop: "1px solid rgba(255,255,255,0.1)", margin: "1rem 0" }} />
+          <hr style={{ border: "none", borderTop: "1px solid rgba(0,0,0,0.1)", margin: "1rem 0" }} />
           
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem", fontWeight: 700 }}>
-            <span>{lang === "hi" ? "अधिशेष शेष" : "Surplus Balance"}</span>
-            <span style={{ color: "var(--color-primary-400)" }}>₹{(wallet.surplusBalance / 100).toFixed(2)}</span>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem", fontWeight: 800 }}>
+            <span style={{ color: "#1E293B" }}>{lang === "hi" ? "अधिशेष शेष" : "Surplus Balance"}</span>
+            <span style={{ color: "#F59E0B" }}>₹{(wallet.surplusBalance / 100).toFixed(2)}</span>
           </div>
         </div>
         

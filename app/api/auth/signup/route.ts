@@ -30,6 +30,7 @@ const workerSchema = z.object({
   category:    z.string().min(2),
   bankDetails: z.string().optional(),
   certified:   z.boolean().optional(),
+  photoUrl:    z.string().optional(),
   role:        z.literal("worker"),
 });
 
@@ -120,6 +121,7 @@ export async function POST(req: NextRequest) {
         certificationTier:   data.certified ? "basic" : "none",
         certJoinedAt:        data.certified ? new Date() : null,
         passportId,
+        photoUrl:            data.photoUrl,
       }).returning();
 
       // Initialise rating stats

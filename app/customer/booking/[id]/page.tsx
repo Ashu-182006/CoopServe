@@ -21,11 +21,12 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
     { intervalMs: 3000, token, enabled: !!token }
   );
 
-  const [timeLeft, setTimeLeft] = useState<number>(60);
+  const [timeLeft, setTimeLeft] = useState<number>(90);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [rejecting, setRejecting] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showCancelPopup, setShowCancelPopup] = useState(false);
 
   useEffect(() => {
     if (data?.booking?.status === "matched" && data?.booking?.pingExpiresAt) {
@@ -62,14 +63,61 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
   const { booking, worker } = data;
 
   const handleAcceptQuote = async () => {
-    await acceptQuoteAndPay(booking.id);
     setShowPaymentModal(false);
+    
+    try {
+      const confetti = (await import("canvas-confetti")).default;
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      await new Promise(resolve => setTimeout(resolve, 800));
+    } catch (e) {
+      console.error("Confetti error", e);
+    }
+
+    await acceptQuoteAndPay(booking.id);
     setShowSuccessPopup(true);
     setTimeout(() => setShowSuccessPopup(false), 3000);
   };
 
+  const handleCancelService = async () => {
+    setShowCancelPopup(true);
+    try {
+      await fetch(`/api/bookings/${booking.id}/cancel`, { 
+        method: "POST", 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    setTimeout(() => {
+      setShowCancelPopup(false);
+      router.push("/customer/home");
+    }, 2500);
+  };
+
   return (
     <div className="page" style={{ paddingBottom: "2rem" }}>
+      <style>{`
+        @keyframes popIn {
+          0% { transform: scale(0.5); opacity: 0; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes bounceIcon {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-15px); }
+        }
+        .btn-danger-hover {
+          transition: all 0.2s ease;
+        }
+        .btn-danger-hover:hover, .btn-danger-hover:active {
+          background-color: #EF4444 !important;
+          color: #ffffff !important;
+          border-color: #EF4444 !important;
+        }
+      `}</style>
       <header style={{ padding: "1.25rem", maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", gap: "1rem" }}>
         <Link href="/customer/home" style={{ textDecoration: "none", color: "var(--color-text-primary)", fontSize: "1.25rem", fontWeight: 700 }}>
           ←
@@ -82,9 +130,9 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
       <main style={{ maxWidth: 1200, margin: "0 auto", width: "100%", padding: "0 1.25rem" }}>
         
         {/* Status Header */}
-        {booking.status !== "matched" && (
-          <div style={{ textAlign: "center", marginBottom: "2rem", padding: "1.5rem", background: "#0F1B2A", borderRadius: "var(--radius-xl)", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 8px 16px rgba(15, 27, 42, 0.15)" }}>
-            <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#ffffff", marginBottom: "0.5rem" }}>
+        {!["matched", "quoted"].includes(booking.status) && (
+          <div style={{ textAlign: "center", marginBottom: "2rem", padding: "1.5rem", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", borderRadius: "var(--radius-xl)", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)" }}>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1E293B", marginBottom: "0.5rem" }}>
               {booking.status === "pending" && (lang === "hi" ? "खोज रहे हैं..." : "Finding Match...")}
               {booking.status === "quoted" && (lang === "hi" ? "कोटेशन प्राप्त हुआ" : "Quote Received")}
               {booking.status === "accepted" && (lang === "hi" ? "भुगतान की प्रतीक्षा" : "Awaiting Payment")}
@@ -92,7 +140,7 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
               {booking.status === "in_progress" && (lang === "hi" ? "काम चल रहा है" : "Work in Progress")}
               {booking.status === "completed" && (lang === "hi" ? "काम पूरा हुआ" : "Completed")}
             </h2>
-            <p style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "0.95rem", margin: 0, fontWeight: 500 }}>
+            <p style={{ color: "#64748B", fontSize: "0.95rem", margin: 0, fontWeight: 500 }}>
               {booking.category} • {booking.description}
             </p>
           </div>
@@ -100,45 +148,77 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
 
         {/* Worker Matched State (Task 4.6) */}
         {booking.status === "matched" && worker && (
-          <div className="card animate-slide-up" style={{ padding: "1.5rem", textAlign: "center", background: "#0F1B2A", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "var(--radius-xl)", boxShadow: "0 8px 16px rgba(15, 27, 42, 0.15)" }}>
-            <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#ffffff", marginBottom: "0.5rem" }}>
-              {lang === "hi" ? "कार्यकर्ता मिला!" : "Worker Matched!"}
-            </h2>
-            <p style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: "0.95rem", margin: "0 0 1.5rem", fontWeight: 500 }}>
-              {booking.category} • {booking.description}
-            </p>
+          <div className="card animate-slide-up" style={{ position: "relative", overflow: "hidden", padding: "2rem", textAlign: "center", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", borderRadius: "var(--radius-xl)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)" }}>
+            {/* Background decorative circles */}
+            <div style={{ position: "absolute", top: "-50px", left: "-50px", width: "250px", height: "250px", borderRadius: "50%", background: "linear-gradient(135deg, #FFC75F, #FF9671)", opacity: 0.3 }}></div>
+            <div style={{ position: "absolute", bottom: "-100px", right: "-80px", width: "350px", height: "350px", borderRadius: "50%", background: "linear-gradient(135deg, #FFC75F, #FF9671)", opacity: 0.5 }}></div>
+            <div style={{ position: "absolute", bottom: "40px", right: "-60px", width: "200px", height: "200px", borderRadius: "50%", background: "linear-gradient(135deg, #FF9671, #FFC75F)", opacity: 0.4 }}></div>
 
-            <div style={{
-              width: 64, height: 64, borderRadius: "var(--radius-full)", background: "rgba(255,255,255,0.1)",
-              margin: "0 auto 1rem", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", color: "#ffffff"
-            }}>
-              (Worker)
-            </div>
-            <h3 style={{ fontSize: "1.25rem", margin: "0 0 0.5rem", color: "#ffffff", fontWeight: 700 }}>{worker.name}</h3>
-            <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "1rem" }}>
-              <span style={{ fontSize: "0.9rem", color: "var(--color-primary-400)", fontWeight: 600 }}>★ {worker.bayesianAvg?.toFixed(1) ?? "New"}</span>
-              {worker.certificationStatus && (
-                <span style={{ fontSize: "0.85rem", background: "rgba(34,197,94,0.15)", color: "#22c55e", padding: "0.1rem 0.5rem", borderRadius: "var(--radius-full)" }}>
-                  ✓ Certified
-                </span>
-              )}
-            </div>
-            
-            <div style={{ marginTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "1.5rem" }}>
-              <p style={{ fontSize: "0.95rem", color: "rgba(255, 255, 255, 0.7)", marginBottom: "0.75rem", fontWeight: 500 }}>
-                {lang === "hi" ? "कार्यकर्ता की प्रतिक्रिया की प्रतीक्षा कर रहे हैं..." : "Waiting for worker to accept..."}
-              </p>
-              <div style={{ fontSize: "2.5rem", fontWeight: 900, fontFamily: "monospace", color: timeLeft <= 10 ? "var(--color-error)" : "#3B82F6", textShadow: timeLeft <= 10 ? "none" : "0 2px 10px rgba(59, 130, 246, 0.3)" }}>
-                00:{timeLeft.toString().padStart(2, "0")}
+            <div style={{ position: "relative", zIndex: 1 }}>
+              {/* Avatar and title row */}
+              <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
+                <div style={{ width: 64, height: 64, borderRadius: "50%", background: "#F59E0B", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", color: "#ffffff", overflow: "hidden", flexShrink: 0, boxShadow: "0 4px 10px rgba(245, 158, 11, 0.3)" }}>
+                  {worker.photoUrl ? <img src={worker.photoUrl} alt="Worker" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: "1.5rem", fontWeight: 700 }}>{worker.name?.charAt(0).toUpperCase()}</span>}
+                </div>
+                <div style={{ textAlign: "left" }}>
+                  <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1E293B", margin: "0 0 0.25rem" }}>
+                    {lang === "hi" ? "कार्यकर्ता मिला!" : "Worker Matched!"}
+                  </h2>
+                  <p style={{ color: "#64748B", fontSize: "0.95rem", margin: 0, fontWeight: 500 }}>
+                    {booking.category} • {booking.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Worker name and rating */}
+              <h3 style={{ fontSize: "1.25rem", margin: "0 0 0.5rem", color: "#1E293B", fontWeight: 700 }}>{worker.name}</h3>
+              <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginBottom: "2rem" }}>
+                <span style={{ fontSize: "1rem", color: "#F59E0B", fontWeight: 700 }}>★ {worker.bayesianAvg?.toFixed(1) ?? "4.0"}</span>
+                {worker.certificationStatus && (
+                  <span style={{ fontSize: "0.9rem", background: "#6EE7B7", color: "#064E3B", padding: "0.15rem 0.75rem", borderRadius: "var(--radius-full)", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.3rem" }}>
+                    <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#064E3B" }}></span> Available
+                  </span>
+                )}
+              </div>
+              
+              {/* Timer section */}
+              <div style={{ borderTop: "1px solid rgba(0,0,0,0.1)", paddingTop: "1.5rem", position: "relative" }}>
+                <p style={{ fontSize: "0.95rem", color: "#64748B", marginBottom: "0.5rem", fontWeight: 500 }}>
+                  {lang === "hi" ? "कार्यकर्ता की प्रतिक्रिया की प्रतीक्षा कर रहे हैं..." : "Waiting for worker to accept..."}
+                </p>
+                <div style={{ fontSize: "3rem", fontWeight: 900, fontFamily: "monospace", color: "#0F1B2A", textShadow: "none" }}>
+                  {Math.floor(timeLeft / 60).toString().padStart(2, "0")}:{(timeLeft % 60).toString().padStart(2, "0")}
+                </div>
               </div>
             </div>
           </div>
         )}
 
         {/* Quote Received State */}
-        {booking.status === "quoted" && (
+        {booking.status === "quoted" && worker && (
+          <>
+          <div className="card animate-slide-up" style={{ padding: "1.5rem", textAlign: "center", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", border: "1px solid rgba(0,0,0,0.05)", borderRadius: "var(--radius-xl)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)", marginBottom: "1.5rem" }}>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1E293B", marginBottom: "1rem" }}>
+              {lang === "hi" ? "कोट प्राप्त हुआ!" : "Quote Received!"}
+            </h2>
+            <div style={{
+              width: 64, height: 64, borderRadius: "var(--radius-full)", background: "#F59E0B",
+              margin: "0 auto 1rem", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem", color: "#ffffff", overflow: "hidden", boxShadow: "0 4px 10px rgba(245, 158, 11, 0.3)"
+            }}>
+              {worker.photoUrl ? <img src={worker.photoUrl} alt="Worker" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: "1.5rem", fontWeight: 700 }}>{worker.name?.charAt(0).toUpperCase()}</span>}
+            </div>
+            <h3 style={{ fontSize: "1.25rem", margin: "0 0 0.5rem", color: "#1E293B", fontWeight: 700 }}>{worker.name}</h3>
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
+              <span style={{ fontSize: "0.9rem", color: "var(--color-warning)", fontWeight: 600 }}>★ {worker.bayesianAvg?.toFixed(1) ?? "New"}</span>
+              {worker.certificationStatus && (
+                <span style={{ fontSize: "0.85rem", background: "rgba(34,197,94,0.15)", color: "#22c55e", padding: "0.1rem 0.5rem", borderRadius: "var(--radius-full)" }}>
+                  ✓ Certified
+                </span>
+              )}
+            </div>
+          </div>
           <div className="card animate-slide-up" style={{ padding: "1.5rem" }}>
-            <h3 style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>{lang === "hi" ? "कोटेशन" : "Quote Estimate"}</h3>
+            <h3 style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>{lang === "hi" ? "कोटेशन विवरण" : "Quote Details"}</h3>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
               <span style={{ color: "var(--color-text-secondary)" }}>{lang === "hi" ? "मजदूरी" : "Labour Wage"}</span>
               <span style={{ fontWeight: 600 }}>₹{(booking.quoteWage / 100).toFixed(2)}</span>
@@ -164,7 +244,7 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
                   }
                 }} 
                 disabled={rejecting}
-                className="btn btn-ghost btn-lg" 
+                className="btn btn-ghost btn-lg btn-danger-hover" 
                 style={{ flex: 1, border: "1px solid var(--color-surface-600)" }}
               >
                 {rejecting ? "..." : (lang === "hi" ? "अस्वीकार" : "Reject")}
@@ -174,6 +254,7 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
               </button>
             </div>
           </div>
+          </>
         )}
 
         {/* Payment Modal */}
@@ -186,16 +267,28 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
                 <div style={{ justifyContent: "flex-start", padding: "1rem", border: "1px solid var(--color-surface-600)", borderRadius: "var(--radius-md)" }}>
                   <p style={{ margin: "0 0 0.75rem", fontWeight: 600 }}>UPI (Unified Payments Interface)</p>
                   <div className="animate-slide-up" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem", padding: "0.5rem", background: "var(--color-surface-700)", borderRadius: "var(--radius-md)" }}>
-                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer" }} onClick={handleAcceptQuote}>Google Pay</button>
-                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer" }} onClick={handleAcceptQuote}>BHIM</button>
-                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer" }} onClick={handleAcceptQuote}>PhonePe</button>
-                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer" }} onClick={handleAcceptQuote}>Paytm</button>
+                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }} onClick={handleAcceptQuote}>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" style={{ height: "16px", objectFit: "contain" }} />
+                      Google Pay
+                    </button>
+                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }} onClick={handleAcceptQuote}>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="BHIM" style={{ height: "14px", objectFit: "contain" }} />
+                      BHIM
+                    </button>
+                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }} onClick={handleAcceptQuote}>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/PhonePe_Logo.svg" alt="PhonePe" style={{ height: "18px", objectFit: "contain" }} />
+                      PhonePe
+                    </button>
+                    <button className="btn btn-sm btn-ghost" style={{ background: "#ffffff", border: "1px solid var(--color-surface-600)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }} onClick={handleAcceptQuote}>
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Paytm_Logo_%28standalone%29.svg" alt="Paytm" style={{ height: "12px", objectFit: "contain" }} />
+                      Paytm
+                    </button>
                   </div>
                 </div>
               </div>
               
               <div style={{ display: "flex", gap: "1rem" }}>
-                <button onClick={() => setShowPaymentModal(false)} className="btn btn-ghost" style={{ flex: 1 }}>{lang === "hi" ? "रद्द करें" : "Cancel"}</button>
+                <button onClick={() => setShowPaymentModal(false)} className="btn btn-ghost btn-danger-hover" style={{ flex: 1 }}>{lang === "hi" ? "रद्द करें" : "Cancel"}</button>
               </div>
             </div>
           </div>
@@ -204,25 +297,29 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
         {/* Payment Success Popup */}
         {showSuccessPopup && (
           <div style={{ position: "fixed", inset: 0, zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}>
-            <div style={{ padding: "2.5rem 2rem", textAlign: "center", background: "#0F1B2A", borderRadius: "var(--radius-xl)", border: "2px solid #14B8A6", boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.3)", animation: "popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)" }}>
+            <div style={{ padding: "2.5rem 2rem", textAlign: "center", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", borderRadius: "var(--radius-xl)", border: "2px solid #14B8A6", boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.3)", animation: "popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)" }}>
               <div style={{ fontSize: "4rem", marginBottom: "1.5rem", color: "#14B8A6", animation: "bounceIcon 1.5s infinite" }}>✓</div>
-              <h2 style={{ color: "#ffffff", margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 800 }}>
+              <h2 style={{ color: "#1E293B", margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 800 }}>
                 {lang === "hi" ? "भुगतान सफल!" : "Payment Successful!"}
               </h2>
-              <p style={{ color: "rgba(255, 255, 255, 0.7)", margin: 0, fontSize: "1.05rem" }}>
+              <p style={{ color: "#64748B", margin: 0, fontSize: "1.05rem", fontWeight: 500 }}>
                 {lang === "hi" ? "आपका कार्यकर्ता रास्ते में है।" : "Your worker is on the way."}
               </p>
             </div>
-            <style>{`
-              @keyframes popIn {
-                0% { transform: scale(0.5); opacity: 0; }
-                100% { transform: scale(1); opacity: 1; }
-              }
-              @keyframes bounceIcon {
-                0%, 100% { transform: translateY(0); }
-                50% { transform: translateY(-15px); }
-              }
-            `}</style>
+          </div>
+        )}
+
+        {/* Cancel Popup */}
+        {showCancelPopup && (
+          <div style={{ position: "fixed", inset: 0, zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}>
+            <div style={{ padding: "2.5rem 2rem", textAlign: "center", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", borderRadius: "var(--radius-xl)", border: "2px solid #EF4444", boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.3)", animation: "popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)" }}>
+              <h2 style={{ color: "#1E293B", margin: "0 0 0.5rem", fontSize: "1.5rem", fontWeight: 800 }}>
+                {lang === "hi" ? "सेवा रद्द की गई!" : "Service Cancelled!"}
+              </h2>
+              <p style={{ color: "#64748B", margin: 0, fontSize: "1.05rem", fontWeight: 500 }}>
+                {lang === "hi" ? "वापस डैशबोर्ड पर जा रहे हैं..." : "Going back to dashboard..."}
+              </p>
+            </div>
           </div>
         )}
 
@@ -273,15 +370,25 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
               );
             })()}
             {booking.status === "paid" && booking.otp && (
-              <div style={{ textAlign: "center", padding: "1.5rem", background: "#0F1B2A", borderRadius: "var(--radius-xl)", boxShadow: "0 8px 16px rgba(15, 27, 42, 0.15)", marginTop: "1.5rem" }}>
-                <p style={{ fontSize: "0.95rem", color: "rgba(255, 255, 255, 0.7)", marginBottom: "0.75rem", fontWeight: 500 }}>
+              <div style={{ textAlign: "center", padding: "1.5rem", background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)", borderRadius: "var(--radius-xl)", border: "1px solid rgba(0,0,0,0.05)", boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)", marginTop: "1.5rem" }}>
+                <p style={{ fontSize: "0.95rem", color: "#64748B", marginBottom: "0.75rem", fontWeight: 500 }}>
                   {lang === "hi" ? "काम पूरा होने पर यह OTP दें" : "Provide this OTP on completion"}
                 </p>
-                <div style={{ fontSize: "3rem", letterSpacing: "0.75rem", fontWeight: 900, color: "#3B82F6", fontFamily: "monospace", textShadow: "0 2px 10px rgba(59, 130, 246, 0.3)" }}>
+                <div style={{ fontSize: "3rem", letterSpacing: "0.75rem", fontWeight: 900, color: "#000000", fontFamily: "monospace", textShadow: "none" }}>
                   {booking.otp}
                 </div>
               </div>
             )}
+            
+            <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
+              <button 
+                onClick={handleCancelService}
+                className="btn btn-outline btn-danger-hover" 
+                style={{ width: "100%", borderColor: "#EF4444", color: "#EF4444" }}
+              >
+                {lang === "hi" ? "सेवा रद्द करें" : "Cancel Service"}
+              </button>
+            </div>
           </div>
         )}
 
@@ -304,7 +411,9 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
           <p style={{ fontSize: "0.8rem", color: "var(--color-text-muted)", marginBottom: "0.5rem" }}>Demo Controls</p>
           <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}>
             {booking.status === "matched" && (
-              <button onClick={async () => { await simulateWorkerQuote(booking.id); }} className="btn btn-sm btn-ghost">Simulate Worker Quote</button>
+              <button onClick={async () => { await simulateWorkerQuote(booking.id); }} className="btn btn-sm" style={{ background: "transparent", color: "#F59E0B", border: "1px solid #F59E0B", borderRadius: "var(--radius-md)", fontWeight: 600, display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 1rem" }}>
+                <span style={{ fontSize: "0.8rem" }}>▶</span> Simulate Worker Quote
+              </button>
             )}
             {(booking.status === "paid" || booking.status === "in_progress") && (
               <button onClick={async () => { await simulateWorkerCompletion(booking.id); }} className="btn btn-sm btn-ghost">Simulate Job Complete</button>
@@ -349,7 +458,7 @@ function RatingForm({ bookingId, token, lang, onSuccess }: { bookingId: string; 
     <form onSubmit={handleSubmit}>
       <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem", marginBottom: "1.5rem", fontSize: "2rem", cursor: "pointer" }}>
         {[1, 2, 3, 4, 5].map((star) => (
-          <span key={star} onClick={() => setScore(star)} style={{ color: star <= score ? "var(--color-primary-400)" : "var(--color-surface-600)", transition: "color 0.2s" }}>
+          <span key={star} onClick={() => setScore(star)} style={{ color: star <= score ? "var(--color-warning)" : "var(--color-surface-600)", transition: "color 0.2s" }}>
             ★
           </span>
         ))}

@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import { db } from "@/db";
-import { workers } from "@/db/schema";
+import { workers, bookings, customers } from "@/db/schema";
 import { withAuth, apiError, apiOk } from "@/lib/api-middleware";
-import { eq } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 
 export const PUT = withAuth(async (req, jwtUser) => {
   const body = await req.json();
@@ -21,6 +21,29 @@ export const PUT = withAuth(async (req, jwtUser) => {
     .update(workers)
     .set({ isOnline })
     .where(eq(workers.id, worker.id));
+
+  // If going online, create a fake job for demo ping
+  if (isOnline) {
+    const pendingCount = await db.select({ count: sql<number>`count(*)` })
+      .from(bookings)
+      .where(and(eq(bookings.workerId, worker.id), eq(bookings.status, 'matched')));
+      
+    if (Number(pendingCount[0].count) === 0) {
+      const [firstCustomer] = await db.select().from(customers).limit(1);
+      if (firstCustomer) {
+        await db.insert(bookings).values({
+          customerId: firstCustomer.id,
+          category: worker.category,
+          description: "Fake job for demo ping",
+          status: "matched",
+          workerId: worker.id,
+          pingExpiresAt: new Date(Date.now() + 30000), // 30s ping
+          customerLat: worker.locationLat,
+          customerLng: worker.locationLng,
+        });
+      }
+    }
+  }
 
   return apiOk({ success: true, message: "Status updated" });
 }, ["worker"]);

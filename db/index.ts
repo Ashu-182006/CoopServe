@@ -11,6 +11,7 @@ const client =
     max: 10,
     idle_timeout: 20,
     connect_timeout: 10,
+    prepare: false,
   });
 
 if (process.env.NODE_ENV !== "production") globalForDb._pgClient = client;

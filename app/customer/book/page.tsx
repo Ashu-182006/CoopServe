@@ -32,10 +32,42 @@ function BookForm() {
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const img = new Image();
     const reader = new FileReader();
+    
     reader.onload = (ev) => {
-      if (ev.target?.result) setPhotoBase64(ev.target.result as string);
+      img.src = ev.target?.result as string;
     };
+    
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const MAX_WIDTH = 400;
+      const MAX_HEIGHT = 400;
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height *= MAX_WIDTH / width;
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width *= MAX_HEIGHT / height;
+          height = MAX_HEIGHT;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx?.drawImage(img, 0, 0, width, height);
+      
+      const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6);
+      setPhotoBase64(compressedBase64);
+    };
+
     reader.readAsDataURL(file);
   };
 
@@ -66,7 +98,14 @@ function BookForm() {
         }),
       });
 
-      const data = await res.json();
+      let data;
+      const textResponse = await res.text();
+      try {
+        data = JSON.parse(textResponse);
+      } catch (parseErr) {
+        throw new Error(textResponse || `Server error: ${res.status}`);
+      }
+
       if (!res.ok) throw new Error(data.error || "Failed to create booking");
 
       router.push(`/customer/booking/${data.booking.id}`);

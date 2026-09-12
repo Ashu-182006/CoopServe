@@ -16,7 +16,8 @@ const createSchema = z.object({
 
 // POST /api/bookings — create booking + run Fair Rotation matching
 export const POST = withAuth(async (req, jwtUser) => {
-  const body = await req.json();
+  try {
+    const body = await req.json();
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return apiError("Validation failed", 400);
 
@@ -107,7 +108,7 @@ export const POST = withAuth(async (req, jwtUser) => {
 
   // Create booking
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const pingExpiresAt = new Date(Date.now() + 60_000); // 60s window
+  const pingExpiresAt = new Date(Date.now() + 90_000); // 90s window
 
   const [booking] = await db.insert(bookings).values({
     customerId:    customer.id,
@@ -124,14 +125,18 @@ export const POST = withAuth(async (req, jwtUser) => {
     pingExpiresAt,
   }).returning();
 
-  return apiOk({
-    booking,
-    rankedWorkers: ranked.map(r => ({
-      workerId: r.workerId,
-      score:    parseFloat(r.score.toFixed(3)),
-      breakdown: r.scoreBreakdown,
-    })),
-  }, 201);
+    return apiOk({
+      booking,
+      rankedWorkers: ranked.map(r => ({
+        workerId: r.workerId,
+        score:    parseFloat(r.score.toFixed(3)),
+        breakdown: r.scoreBreakdown,
+      })),
+    }, 201);
+  } catch (err: any) {
+    console.error("Booking creation error:", err);
+    return apiError(err.message || "Internal server error", 500);
+  }
 }, ["customer"]);
 
 // GET /api/bookings

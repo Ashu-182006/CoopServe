@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, use } from "react";
+import { useState, Suspense, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +15,30 @@ function QuoteForm({ id }: { id: string }) {
   const [partsCost, setPartsCost] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [bookingData, setBookingData] = useState<any>(null);
+
+
+  useEffect(() => {
+    if (!token) return;
+    const fetchBooking = async () => {
+      try {
+        const res = await fetch(`/api/bookings/${id}/status`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setBookingData(data);
+        } else {
+          const errData = await res.json();
+          setBookingData({ error: errData.error || "API error" });
+        }
+      } catch (err: any) {
+        console.error("Failed to load booking details");
+        setBookingData({ error: err.message });
+      }
+    };
+    fetchBooking();
+  }, [id, token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +97,35 @@ function QuoteForm({ id }: { id: string }) {
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           
+          <div className="card" style={{ padding: "1.5rem", background: "var(--color-surface-50)", border: "1px solid var(--color-surface-200)" }}>
+            <h2 style={{ fontSize: "1.1rem", marginBottom: "1rem", color: "var(--color-text-primary)" }}>
+              {lang === "hi" ? "ग्राहक का विवरण" : "Customer Details"}
+            </h2>
+            {!bookingData ? (
+              <div style={{ color: "var(--color-text-muted)", fontSize: "0.9rem" }}>Loading customer details...</div>
+            ) : bookingData.error ? (
+              <div style={{ color: "var(--color-error)", fontSize: "0.9rem" }}>Error: {bookingData.error}</div>
+            ) : (
+              <>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "1rem" }}>
+                  <p style={{ margin: 0 }}><strong>{lang === "hi" ? "नाम:" : "Name:"}</strong> {bookingData.customer?.name || "Customer"}</p>
+                  <p style={{ margin: 0 }}><strong>{lang === "hi" ? "पता:" : "Address:"}</strong> {bookingData.customer?.address || "N/A"}</p>
+                  <p style={{ margin: 0 }}><strong>{lang === "hi" ? "कार्य का विवरण:" : "Work Description:"}</strong> {bookingData.booking?.description || "Fake job for demo ping"}</p>
+                </div>
+                {bookingData.booking?.beforeImageUrl && (
+                  <div>
+                    <h3 style={{ fontSize: "0.95rem", marginBottom: "0.5rem" }}>{lang === "hi" ? "छवि:" : "Image:"}</h3>
+                    <img 
+                      src={bookingData.booking.beforeImageUrl} 
+                      alt="Work issue" 
+                      style={{ width: "100%", maxHeight: "200px", objectFit: "cover", borderRadius: "var(--radius-md)" }}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
           <div className="card" style={{ padding: "1.5rem" }}>
             <div className="form-group" style={{ marginBottom: "1rem" }}>
               <label className="label">{lang === "hi" ? "मजदूरी (₹)" : "Labour Wage (₹)"}</label>

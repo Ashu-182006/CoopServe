@@ -30,7 +30,7 @@ function SignUpForm() {
     name: "", mobile: "", dob: "", address: "",
     category: "", certified: false,
     aadhaar: "", pan: "",
-    password: "", confirmPassword: "", profileImage: null as File | null,
+    password: "", confirmPassword: "", profileImageBase64: "",
   });
 
   const set = (key: string, val: string | boolean) => setForm(prev => ({ ...prev, [key]: val }));
@@ -67,6 +67,7 @@ function SignUpForm() {
           aadhaar:    form.aadhaar.trim(),
           pan:        form.pan.trim(),
           password:   form.password,
+          photoUrl:   form.profileImageBase64 || undefined,
         }),
       });
       const data = await res.json();
@@ -206,9 +207,53 @@ function SignUpForm() {
                 <label className="label">{lang === "hi" ? "प्रोफ़ाइल चित्र (वैकल्पिक)" : "Profile Picture (Optional)"}</label>
                 <input type="file" accept="image/*" className="input" style={{ background: "#ffffff", padding: "0.5rem" }} onChange={e => {
                   if (e.target.files && e.target.files[0]) {
-                    set("profileImage", e.target.files[0] as any);
+                    const file = e.target.files[0];
+                    if (file.size > 20 * 1024) {
+                      setError(lang === "hi" ? "प्रोफ़ाइल चित्र 20KB से कम होना चाहिए" : "Profile picture must be less than 20KB");
+                      e.target.value = "";
+                      return;
+                    }
+                    setError("");
+                    const img = new Image();
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      img.src = ev.target?.result as string;
+                    };
+                    img.onload = () => {
+                      const canvas = document.createElement("canvas");
+                      const MAX_SIZE = 150; // Keep very small to stay < 20KB
+                      let width = img.width;
+                      let height = img.height;
+
+                      if (width > height) {
+                        if (width > MAX_SIZE) {
+                          height *= MAX_SIZE / width;
+                          width = MAX_SIZE;
+                        }
+                      } else {
+                        if (height > MAX_SIZE) {
+                          width *= MAX_SIZE / height;
+                          height = MAX_SIZE;
+                        }
+                      }
+
+                      canvas.width = width;
+                      canvas.height = height;
+                      const ctx = canvas.getContext("2d");
+                      ctx?.drawImage(img, 0, 0, width, height);
+                      
+                      // 0.6 quality on a 150px image will easily be under 10-15KB
+                      const compressedBase64 = canvas.toDataURL("image/jpeg", 0.6);
+                      set("profileImageBase64", compressedBase64);
+                    };
+                    reader.readAsDataURL(file);
                   }
                 }} />
+                {form.profileImageBase64 && (
+                  <p style={{ fontSize: "0.75rem", color: "var(--color-primary-500)", marginTop: "0.25rem", marginBottom: 0 }}>
+                    {lang === "hi" ? "चित्र संलग्न किया गया" : "Image compressed and attached"}
+                  </p>
+                )}
               </div>
               <div className="form-group">
                 <label className="label" htmlFor="aadhaar">{lang === "hi" ? "आधार नंबर" : "Aadhaar Number"}</label>
