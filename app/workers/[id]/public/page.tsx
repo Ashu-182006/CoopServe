@@ -3,7 +3,6 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { WorkerPublicData } from "@/lib/types";
 import { Home } from "lucide-react";
 
 export default function WorkerPublicProfile({ params }: { params: Promise<{ id: string }> }) {
