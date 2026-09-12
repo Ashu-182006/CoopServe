@@ -3,6 +3,8 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { WorkerPublicData } from "@/lib/types";
+import { Home } from "lucide-react";
 
 export default function WorkerPublicProfile({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -46,7 +48,8 @@ export default function WorkerPublicProfile({ params }: { params: Promise<{ id: 
     <div className="page" style={{ paddingBottom: "2rem", minHeight: "100vh", background: "var(--color-bg)" }}>
       <header style={{ padding: "1.25rem", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.1)", background: "var(--color-surface-800)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <img src="/logo.png" alt="CoopServe Logo" style={{ height: 32, width: "auto", objectFit: "contain" }} />
+          <Home size={32} color="var(--color-primary-500)" />
+          <span style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--color-text-primary)" }}>CoopServe</span>
         </div>
         <button onClick={toggle} className="btn btn-ghost btn-sm" style={{ fontWeight: 700 }}>
           {lang === "en" ? "हिं" : "EN"}

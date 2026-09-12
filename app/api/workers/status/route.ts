@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { db } from "@/db";
 import { workers, bookings, customers } from "@/db/schema";
 import { withAuth, apiError, apiOk } from "@/lib/api-middleware";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, gt } from "drizzle-orm";
 
 export const PUT = withAuth(async (req, jwtUser) => {
   const body = await req.json();
@@ -26,7 +26,7 @@ export const PUT = withAuth(async (req, jwtUser) => {
   if (isOnline) {
     const pendingCount = await db.select({ count: sql<number>`count(*)` })
       .from(bookings)
-      .where(and(eq(bookings.workerId, worker.id), eq(bookings.status, 'matched')));
+      .where(and(eq(bookings.workerId, worker.id), eq(bookings.status, 'matched'), gt(bookings.pingExpiresAt, sql`NOW()`)));
       
     if (Number(pendingCount[0].count) === 0) {
       const [firstCustomer] = await db.select().from(customers).limit(1);
@@ -37,7 +37,7 @@ export const PUT = withAuth(async (req, jwtUser) => {
           description: "Fake job for demo ping",
           status: "matched",
           workerId: worker.id,
-          pingExpiresAt: new Date(Date.now() + 30000), // 30s ping
+          pingExpiresAt: new Date(Date.now() + 90000), // 90s ping
           customerLat: worker.locationLat,
           customerLng: worker.locationLng,
         });

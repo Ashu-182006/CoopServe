@@ -45,17 +45,30 @@ export const POST = withAuth(async (req, jwtUser, ctx) => {
   await db.update(payments).set({ escrowStatus: "released", payoutStatus: "processed", updatedAt: new Date() }).where(eq(payments.id, payment.id));
 
   // Update welfare wallet contributions
+  // Update welfare wallet contributions
   if (booking.workerId && payment.welfareFee) {
     const [wallet] = await db.select().from(welfareWallet).where(eq(welfareWallet.workerId, booking.workerId));
     if (wallet) {
+      const newTotal = wallet.contributionsTotal + payment.welfareFee;
+      const enrolled = newTotal >= 2000; // Rs 20 premium
+      const surplus = enrolled ? newTotal - 2000 : 0;
       await db.update(welfareWallet).set({
-        contributionsTotal: wallet.contributionsTotal + payment.welfareFee,
+        contributionsTotal: newTotal,
+        pmsbyEnrolled: enrolled,
+        surplusBalance: surplus,
+        pmsbyPolicyYear: enrolled ? "2024-2025" : "N/A",
         updatedAt: new Date()
       }).where(eq(welfareWallet.workerId, booking.workerId));
     } else {
+      const newTotal = payment.welfareFee;
+      const enrolled = newTotal >= 2000;
+      const surplus = enrolled ? newTotal - 2000 : 0;
       await db.insert(welfareWallet).values({
         workerId: booking.workerId,
-        contributionsTotal: payment.welfareFee,
+        contributionsTotal: newTotal,
+        pmsbyEnrolled: enrolled,
+        surplusBalance: surplus,
+        pmsbyPolicyYear: enrolled ? "2024-2025" : "N/A",
       });
     }
   }

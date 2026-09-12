@@ -42,7 +42,7 @@ export const POST = withAuth(async (req, jwtUser, ctx) => {
     }
 
     const nextWorkerId = rankedIds[nextRank];
-    const pingExpiresAt = new Date(Date.now() + 30_000);
+    const pingExpiresAt = new Date(Date.now() + 90_000);
     await db.update(bookings).set({ workerId: nextWorkerId, currentRank: nextRank, pingExpiresAt, updatedAt: new Date() }).where(eq(bookings.id, id));
     return apiOk({ status: "cascaded", nextWorkerId, rank: nextRank });
   }

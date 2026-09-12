@@ -87,7 +87,9 @@ function WelfareWalletScreen() {
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
             <span style={{ color: "#64748B", fontWeight: 500 }}>{lang === "hi" ? "प्रीमियम भुगतान" : "Premium Paid"}</span>
-            <span style={{ color: "var(--color-error)", fontWeight: 600 }}>- ₹20.00</span>
+            <span style={{ color: wallet.pmsbyEnrolled ? "var(--color-error)" : "#64748B", fontWeight: 600 }}>
+              {wallet.pmsbyEnrolled ? "- ₹20.00" : "- ₹0.00"}
+            </span>
           </div>
           
           <hr style={{ border: "none", borderTop: "1px solid rgba(0,0,0,0.1)", margin: "1rem 0" }} />

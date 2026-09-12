@@ -207,7 +207,8 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
             }}>
               {worker.photoUrl ? <img src={worker.photoUrl} alt="Worker" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: "1.5rem", fontWeight: 700 }}>{worker.name?.charAt(0).toUpperCase()}</span>}
             </div>
-            <h3 style={{ fontSize: "1.25rem", margin: "0 0 0.5rem", color: "#1E293B", fontWeight: 700 }}>{worker.name}</h3>
+            <h3 style={{ fontSize: "1.25rem", margin: "0 0 0.25rem", color: "#1E293B", fontWeight: 700 }}>{worker.name}</h3>
+            <p style={{ fontSize: "0.85rem", color: "var(--color-text-secondary)", margin: "0 0 0.5rem", fontWeight: 600 }}>{worker.passportId}</p>
             <div style={{ display: "flex", justifyContent: "center", gap: "1rem" }}>
               <span style={{ fontSize: "0.9rem", color: "var(--color-warning)", fontWeight: 600 }}>★ {worker.bayesianAvg?.toFixed(1) ?? "New"}</span>
               {worker.certificationStatus && (
@@ -395,7 +396,13 @@ export default function BookingStatusPage({ params }: { params: Promise<{ id: st
         {/* Rating State */}
         {booking.status === "completed" && (
           <div className="card animate-slide-up" style={{ padding: "1.5rem", textAlign: "center" }}>
-            <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>(Success)</div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.25rem" }}>
+              <svg width="72" height="72" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="12" fill="var(--color-success)" opacity="0.15" />
+                <circle cx="12" cy="12" r="9" fill="var(--color-success)" />
+                <path d="M8.5 12L11 14.5L15.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
             <h3 style={{ fontSize: "1.25rem", margin: "0 0 1rem", color: "var(--color-text-primary)" }}>
               {lang === "hi" ? "काम पूरा हुआ!" : "Job Completed!"}
             </h3>

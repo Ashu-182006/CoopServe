@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Home } from "lucide-react";
 import { usePolling } from "@/hooks/usePolling";
 import { Booking } from "@/db/schema";
 
@@ -48,11 +49,12 @@ export default function CustomerHomePage() {
     <div className="page" style={{ paddingBottom: "1rem" }}>
       {/* ── Top Bar ───────────────────────────────────────────────────────── */}
       <header style={{
-        background: "#ffffff",
+        background: "linear-gradient(135deg, #FFF4E0 0%, #FFDDA1 100%)",
         padding: "1.5rem 1rem 1.25rem",
         maxWidth: 1200, margin: "0 auto", width: "100%",
         borderBottom: "1px solid rgba(0,0,0,0.05)",
-        boxShadow: "0 4px 20px -10px rgba(0,0,0,0.05)"
+        boxShadow: "0 4px 20px -10px rgba(0,0,0,0.05)",
+        borderRadius: "0 0 1rem 1rem"
       }}>
         {/* Logo Section */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.5rem" }}>

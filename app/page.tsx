@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Home } from "lucide-react";
 
 const SERVICE_ICONS: { label: string; icon: string; hiLabel: string }[] = [
   { label: "Plumbing",        icon: "🔧", hiLabel: "प्लम्बिंग" },
@@ -71,7 +72,8 @@ export default function LandingPage() {
       }}>
         {/* Logo left */}
         <div style={{ display: "flex", alignItems: "center" }}>
-          <img src="/logo.png" alt="CoopServe Logo" style={{ height: 40, width: "auto", objectFit: "contain", mixBlendMode: "darken" }} />
+          <Home size={32} color="var(--color-primary-500)" />
+          <span style={{ fontWeight: 800, fontSize: "1.25rem", marginLeft: "0.5rem", color: "var(--color-text-primary)" }}>CoopServe</span>
         </div>
 
         {/* Links & Lang toggle right */}

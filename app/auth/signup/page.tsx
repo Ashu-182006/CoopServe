@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Home } from "lucide-react";
 
 const CATEGORIES = ["Plumbing", "Carpentry", "Cleaning", "Electrical", "Painting", "Appliance Repair", "Pest Control", "AC Service"];
 const CATEGORY_HI: Record<string, string> = {
@@ -24,6 +25,7 @@ function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showCertWarning, setShowCertWarning] = useState(false);
 
   // Form state
   const [form, setForm] = useState({
@@ -103,6 +105,11 @@ function SignUpForm() {
           setError(lang === "hi" ? "जन्म तिथि आवश्यक है" : "Date of birth is required");
           return;
         }
+
+        if (!form.certified) {
+          setShowCertWarning(true);
+          return;
+        }
       }
     }
     setStep(s => s + 1);
@@ -113,7 +120,8 @@ function SignUpForm() {
       {/* Header */}
       <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.25rem 1.25rem 0", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.5rem", textDecoration: "none" }}>
-          <img src="/logo.png" alt="CoopServe Logo" style={{ height: 32, width: "auto", objectFit: "contain" }} />
+          <Home size={32} color="var(--color-primary-500)" />
+          <span style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--color-text-primary)" }}>CoopServe</span>
         </Link>
         <button onClick={toggle} className="btn btn-ghost btn-sm" style={{ fontWeight: 700 }}>{lang === "en" ? "हिं" : "EN"}</button>
       </header>
@@ -161,9 +169,9 @@ function SignUpForm() {
                           onClick={() => set("category", cat)}
                           style={{
                             padding: "0.625rem 0.75rem", borderRadius: "var(--radius-md)", fontSize: "0.8125rem", fontWeight: 500, cursor: "pointer", textAlign: "left", transition: "all 150ms ease",
-                            background: form.category === cat ? "rgba(43,66,175,0.25)" : "var(--color-surface-700)",
-                            border: form.category === cat ? "1px solid var(--color-primary-400)" : "1px solid rgba(255,255,255,0.07)",
-                            color: form.category === cat ? "var(--color-primary-300)" : "var(--color-text-secondary)",
+                            background: form.category === cat ? "rgba(250, 204, 21, 0.25)" : "var(--color-surface-700)",
+                            border: form.category === cat ? "1px solid #eab308" : "1px solid rgba(255,255,255,0.07)",
+                            color: form.category === cat ? "#854d0e" : "var(--color-text-secondary)",
                           }}>
                           {lang === "hi" ? CATEGORY_HI[cat] : cat}
                         </button>
@@ -315,6 +323,33 @@ function SignUpForm() {
           </Link>
         </p>
       </main>
+
+      {/* Custom Certification Warning Modal */}
+      {showCertWarning && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "1rem" }}>
+          <div className="card animate-slide-up" style={{ width: "100%", maxWidth: 400, padding: "1.5rem", textAlign: "center" }}>
+            <h2 style={{ margin: "0 0 1rem", fontSize: "1.25rem", color: "var(--color-warning)" }}>
+              {lang === "hi" ? "चेतावनी" : "Warning"}
+            </h2>
+            <p style={{ margin: "0 0 1.5rem", fontSize: "0.95rem", color: "var(--color-text-secondary)", lineHeight: 1.5 }}>
+              {lang === "hi" 
+                ? "कौशल प्रमाणपत्र उचित कार्य रोटेशन में आपकी प्राथमिकता में सुधार करता है। क्या आप बिना प्रमाणपत्र के आगे बढ़ना चाहते हैं?"
+                : "Skill certificate improves your priority in fair job rotation. Do you want to proceed without it?"}
+            </p>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <button type="button" className="btn btn-ghost" style={{ flex: 1 }} onClick={() => setShowCertWarning(false)}>
+                {lang === "hi" ? "रद्द करें" : "Cancel"}
+              </button>
+              <button type="button" className="btn btn-primary" style={{ flex: 1 }} onClick={() => {
+                setShowCertWarning(false);
+                setStep(s => s + 1);
+              }}>
+                {lang === "hi" ? "आगे बढ़ें" : "Proceed"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

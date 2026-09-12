@@ -35,6 +35,7 @@ async function seed() {
   console.log("🌱 Seeding CoopServe database...\n");
 
   console.log("🧹 Cleaning old data...");
+  await db.delete(schema.ratings);
   await db.delete(schema.payments);
   await db.delete(schema.bookings);
   await db.delete(schema.welfareWallet);

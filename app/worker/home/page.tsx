@@ -9,7 +9,7 @@ import { usePolling } from "@/hooks/usePolling";
 
 function JobPingPopup({ job, onRespond }: { job: any; onRespond: (id: string, action: "accept" | "decline") => void }) {
   const { lang } = useLanguage();
-  const [timeLeft, setTimeLeft] = useState(30);
+  const [timeLeft, setTimeLeft] = useState(90);
 
   useEffect(() => {
     const interval = setInterval(() => {

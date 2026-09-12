@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Home } from "lucide-react";
 
 function SignInForm() {
   const { signIn } = useAuth();
@@ -50,7 +51,8 @@ function SignInForm() {
       {/* Header */}
       <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.25rem 1.25rem 0", maxWidth: 1200, margin: "0 auto", width: "100%" }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.5rem", textDecoration: "none" }}>
-          <img src="/logo.png" alt="CoopServe Logo" style={{ height: 32, width: "auto", objectFit: "contain" }} />
+          <Home size={32} color="var(--color-primary-500)" />
+          <span style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--color-text-primary)" }}>CoopServe</span>
         </Link>
         <button onClick={toggle} className="btn btn-ghost btn-sm" style={{ fontWeight: 700 }}>
           {lang === "en" ? "हिं" : "EN"}
